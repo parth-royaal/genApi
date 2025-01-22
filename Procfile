@@ -1,1 +1,1 @@
-web: uvicorn -b :$PORT app:app
+web : flask run --port=$PORT
