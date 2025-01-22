@@ -8,3 +8,4 @@ Werkzeug==2.2.2
 psycopg2==2.9.10
 flask-cors==5.0.0
 pandas==2.2.3
+flask-sock==0.7.0
