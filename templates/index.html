@@ -42,8 +42,18 @@
 
       getBars: function(symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) {
         const { from, to, firstDataRequest } = periodParams;
-        // const apiRoot = 'http://localhost:5000';  // Changed to local Flask API
-        const apiRoot = 'https://${window.location.host}';  // Changed to local Flask API
+        // const apiRoot = 'http://localhost:8080';  // Changed to local Flask API
+        const protocol = window.location.protocol === "https:" ? "https://" : "http://";
+        const apiRoot = protocol === "https://" ? `https://${window.location.host}` : `http://localhost:8080`;
+
+
+    // const apiRoot = `${protocol === "wss://" ? "https" : "http"}://${window.location.host}`;
+        
+        // const apiRoot = 'https://${window.location.host}';  // Changed to local Flask API
+        // Dynamically set the API root URL based on the protocol
+  
+  
+        // const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
 
         const splitSymbol = symbolInfo.name.split(/[:/]/);
         
@@ -119,7 +129,10 @@
         }
 
         // Connect to WebSocket for real-time updates
-        ws = new WebSocket('ws://localhost:5000/realtime');
+        ws = new WebSocket('ws://localhost:8080/realtime');
+        // const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+        // const ws = new WebSocket(`${wsProtocol}${window.location.host}/realtime`);
+
 
         ws.onopen = () => {
           console.log('WebSocket connection established');

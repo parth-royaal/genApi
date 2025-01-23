@@ -168,10 +168,12 @@ function initializeTradingSimulator() {
     document.getElementById('p').onclick = togglePause;
 
     // Connect to WebSocket for real-time updates
-    // const ws = new WebSocket('ws://localhost:5000/realtime');
-    
-    // Connect to WebSocket using the current host (works for both local and deployed environments)
-    const ws = new WebSocket(`wss://${window.location.host}/realtime`);
+    const ws = new WebSocket('ws://localhost:8080/realtime');
+    // const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+    // const ws = new WebSocket(`${wsProtocol}${window.location.host}/realtime`);
+
+
+
 
     ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
