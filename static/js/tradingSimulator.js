@@ -1,6 +1,3 @@
-// static/js/tradingSimulator.js
-
-// State Variables
 let totalTrades = 0;
 let profitableTrades = 0;
 let totalProfit = 0;
@@ -10,13 +7,11 @@ let isPaused = false;
 let isLong = false;
 let isShort = false;
 let entryPrice = 0;
-let latestPrice = null; // Track the latest price from WebSocket
-let activeTrade = null; // Track the active trade (Long or Short)
+let latestPrice = null; 
+let activeTrade = null;
 
-// DOM Elements
 const floatingRectangleId = 'floatingRectangle';
 
-// Helper Functions
 function formatTime(timestamp) {
     return new Date(timestamp).toLocaleString('en-IN', {
         timeZone: 'Asia/Kolkata',
@@ -35,7 +30,7 @@ function logChartUpdate(message) {
 function logTrade(message) {
     const tradeLog = document.getElementById('tradeLog');
     tradeLog.innerHTML += `<div class="log-entry">${message}</div>`;
-    tradeLog.scrollTop = tradeLog.scrollHeight; // Auto-scroll to the latest log
+    tradeLog.scrollTop = tradeLog.scrollHeight;
 }
 
 function updateProfitLog() {
@@ -104,10 +99,10 @@ function executeLongTrade() {
         totalProfit += profit;
         if (profit > 0) profitableTrades++;
         longTrades++;
-        activeTrade = null; // Clear active trade
+        activeTrade = null; 
     } else {
         logTrade(`Long Entry: Price: $${latestPrice.toFixed(2)}, Time: ${formatTime(Date.now())}`);
-        activeTrade = { type: 'Long', entryPrice: latestPrice }; // Set active trade
+        activeTrade = { type: 'Long', entryPrice: latestPrice }; 
     }
     isLong = !isLong;
     entryPrice = latestPrice;
@@ -127,10 +122,10 @@ function executeShortTrade() {
         totalProfit += profit;
         if (profit > 0) profitableTrades++;
         shortTrades++;
-        activeTrade = null; // Clear active trade
+        activeTrade = null; 
     } else {
         logTrade(`Short Entry: Price: $${latestPrice.toFixed(2)}, Time: ${formatTime(Date.now())}`);
-        activeTrade = { type: 'Short', entryPrice: latestPrice }; // Set active trade
+        activeTrade = { type: 'Short', entryPrice: latestPrice }; 
     }
     isShort = !isShort;
     entryPrice = latestPrice;
@@ -149,38 +144,29 @@ function updateRealTimeProfitLoss() {
         const profitClass = profit >= 0 ? 'profit-positive' : 'profit-negative';
         const tradeLog = document.getElementById('tradeLog');
 
-        // Find the last log entry for the active trade
         const lastLogEntry = tradeLog.querySelector('.log-entry:last-child');
         if (lastLogEntry) {
-            // Append real-time profit/loss to the last log entry
             lastLogEntry.innerHTML += `<br><span class="${profitClass}">Real-Time P/L: ${profit}%</span>`;
         }
     }
 }
 
-// Main Function
 function initializeTradingSimulator() {
     initializeFloatingRectangle();
 
-    // Attach event listeners
     document.getElementById('l').onclick = executeLongTrade;
     document.getElementById('s').onclick = executeShortTrade;
     document.getElementById('p').onclick = togglePause;
 
-    // Connect to WebSocket for real-time updates
-    const ws = new WebSocket('ws://localhost:8080/realtime');
-    // const wsProtocol = window.location.protocol === "https:" ? "wss://" : "ws://";
-    // const ws = new WebSocket(`${wsProtocol}${window.location.host}/realtime`);
-
-
-
-
+    // const ws = new WebSocket('ws://localhost:8080/realtime');
+    const protocol = window.location.protocol === "https:" ? "wss://" : "ws://";
+    ws = new WebSocket(`${protocol}${window.location.host}/realtime`);
+    
     ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
-        latestPrice = data.close; // Update the latest price
+        latestPrice = data.close;
         logChartUpdate(`Price: $${latestPrice.toFixed(2)}, Time: ${formatTime(data.time)}`);
 
-        // Update real-time profit/loss
         updateRealTimeProfitLoss();
     };
 
@@ -193,12 +179,5 @@ function initializeTradingSimulator() {
     };
 }
 
-// Export the function to update the latest price
-function updateLatestPrice(price) {
-    latestPrice = price;
-    logChartUpdate(`Price: $${latestPrice.toFixed(2)}, Time: ${formatTime(Date.now())}`);
-}
-
-// Export the initialize function
 window.initializeTradingSimulator = initializeTradingSimulator;
 window.updateLatestPrice = updateLatestPrice;
