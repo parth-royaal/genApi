@@ -1,1 +1,1 @@
-web : flask run --port=$PORT
+web: gunicorn   -w 1 -k eventlet -b :$PORT app:app
