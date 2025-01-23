@@ -42,7 +42,9 @@
 
       getBars: function(symbolInfo, resolution, periodParams, onHistoryCallback, onErrorCallback) {
         const { from, to, firstDataRequest } = periodParams;
-        const apiRoot = 'http://localhost:5000';  // Changed to local Flask API
+        // const apiRoot = 'http://localhost:5000';  // Changed to local Flask API
+        const apiRoot = 'https://${window.location.host}';  // Changed to local Flask API
+
         const splitSymbol = symbolInfo.name.split(/[:/]/);
         
         const url = resolution.includes('D') ? '/data/histoday' : 
