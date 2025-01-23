@@ -63,3 +63,6 @@ def handle_reverse(data):
     input_text = data['text']  # Get the input text from the client
     reversed_text = rev(input_text)  # Reverse the text
     socketio.emit('response', {'reversed': reversed_text})  # Emit the reversed text back to the client
+
+if __name__ == '__main__':
+    socketio.run(app, debug=True)
